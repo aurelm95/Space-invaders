@@ -1,0 +1,104 @@
+import java.awt.Frame;
+import java.awt.Graphics;
+import java.awt.Image;
+
+public class finestra extends Frame{
+
+	int ample=600;
+	int alt=600;
+	
+	Image img;
+	Graphics g;
+	
+	public static void main(String[] args) {
+		new finestra();}
+	finestra(){
+		this.setSize(ample, alt);
+		this.setVisible(true);
+		
+		img=createImage(ample,alt);
+		g=img.getGraphics();
+		
+		Joc joc=new Joc(this);
+		joc.executa();
+	}
+	
+	public void update(Graphics g) {
+		paint(g);//millora sincronia, evita panatllazos
+	}
+	public void paint(Graphics g) {
+		g.drawImage(img,0,0,null);
+	}
+
+}
+
+
+
+
+
+
+import java.awt.Color;
+
+public class Joc {
+	finestra f;
+	int y;
+	cotxe c;
+	Joc(finestra f){
+		this.f=f;
+		y=50;
+	}
+	void executa() {
+		inicialitza();
+		while(true) {
+			calculaMoviments();
+			comprovaXocs();
+			repintaPantalla();
+			
+			
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	void inicialitza() {
+		c=new cotxe(50,100,20,10);
+	}
+	void calculaMoviments() {y++;
+	c.moure();}
+	void comprovaXocs() {}
+	void repintaPantalla() {
+		//f.g.clearRect(0, 0, f.ample, f.alt); //neteja la pantalla
+		f.g.setColor(Color.BLACK);
+		f.g.fillRect(0,0,f.ample,f.alt);
+		
+		f.g.setColor(Color.WHITE);
+		f.g.drawLine(50, 50, 300, y);
+		
+		c.pinta(f.g);
+		f.repaint();
+	}
+}
+
+
+
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class cotxe {
+	int x;int y;int ample;int alt;
+	cotxe(int x,int y,int ample,int alt){
+		
+		this.x=x;this.y=y;this.ample=ample;this.alt=alt;
+	}
+	void moure() {
+		x++;
+	}
+	void pinta(Graphics g) {
+		g.setColor(Color.YELLOW);
+		g.drawRect(x, y, ample, alt);
+	}
+	
+}
